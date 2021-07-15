@@ -2,7 +2,10 @@ package com.cityu.foodcaptain.entity;
 
 import com.cityu.foodcaptain.constants.Constants;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Recipe {
     private int recipeId;
@@ -21,7 +24,7 @@ public class Recipe {
 
     public static Recipe makeRecipe(String record) {
         String[] data = record.split(Constants.SPLIT);
-        if(data.length != 8) {
+        if (data.length != 8) {
             return new Recipe();
         }
         Recipe recipe = new Recipe();
@@ -36,6 +39,22 @@ public class Recipe {
         return recipe;
     }
 
+    public static int calSimilarity(Recipe r1, Recipe r2) {
+        if (r1 == null || r2 == null) {
+            return 0;
+        }
+        int res = 0;
+        List<RecipeContainer> l1 = r1.getRecipeContainers();
+        List<RecipeContainer> l2 = r2.getRecipeContainers();
+        Set<String> match = new HashSet<>(l1).stream()
+                .map(RecipeContainer::getFood).collect(Collectors.toSet());
+        for (RecipeContainer rc : l2) {
+            if (rc != null && match.contains(rc.getFood())) {
+                res++;
+            }
+        }
+        return res;
+    }
 
     public String getCuisineSystem() {
         return cuisineSystem;

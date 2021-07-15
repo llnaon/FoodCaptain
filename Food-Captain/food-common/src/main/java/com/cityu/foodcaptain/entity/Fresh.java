@@ -15,17 +15,22 @@ public class Fresh {
         if(freshData.length != 9) {
             return null;
         }
-        Fresh fresh = new Fresh();
-        fresh.id = Integer.parseInt(freshData[0]);
-        fresh.name = freshData[1];
-        fresh.img = freshData[2];
-        fresh.price = Double.parseDouble(freshData[3]);
-        fresh.description = freshData[4];
-        fresh.category = freshData[5];
-        fresh.type = freshData[6];
-        fresh.stock = Integer.parseInt(freshData[7]);
-        fresh.sell = Integer.parseInt(freshData[8]);
-        return fresh;
+        try {
+            Fresh fresh = new Fresh();
+            fresh.id = Integer.parseInt(freshData[0]);
+            fresh.name = freshData[1];
+            fresh.img = freshData[2];
+            fresh.price = Double.parseDouble(freshData[3]);
+            fresh.description = freshData[4];
+            fresh.category = freshData[5];
+            fresh.type = freshData[6];
+            fresh.stock = Integer.parseInt(freshData[7]);
+            fresh.sell = Integer.parseInt(freshData[8]);
+            return fresh;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public int getId() {

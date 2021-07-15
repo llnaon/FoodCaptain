@@ -6,29 +6,39 @@ import com.cityu.foodcaptain.utils.FileUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FreshService {
 
-    public List<Fresh> getFresh() {
+    public static final List<Fresh> FRESH = getFresh();
+
+    public static List<Fresh> getFresh() {
         List<String> data = FileUtils.readFileByLines(Constants.FRESH);
         List<Fresh> freshList = new ArrayList<>();
         for (String record : data) {
-            String[] freshData = record.split(Constants.SPLIT);
-            freshList.add(Fresh.makeFresh(freshData));
+            Fresh fresh = parseFresh(record);
+            if (fresh != null) {
+                freshList.add(fresh);
+            }
         }
         return freshList;
     }
 
+    public static Fresh parseFresh(String record) {
+        String[] freshData = record.split(Constants.SPLIT);
+        return Fresh.makeFresh(freshData);
+    }
+
     public Fresh getDetail(int id) {
-        List<Fresh> freshList = getFresh();
-        for (Fresh fresh : freshList) {
+        for (Fresh fresh : FRESH) {
             if (fresh.getId() == id) {
                 return fresh;
             }
         }
-        return null;
+        return new Fresh();
     }
 
     public List<Fresh> searchFresh(String des) {
@@ -36,8 +46,7 @@ public class FreshService {
         if (des == null) {
             return res;
         }
-        List<Fresh> freshList = getFresh();
-        for (Fresh fresh : freshList) {
+        for (Fresh fresh : FRESH) {
             if (des.equals(fresh.getType())
                     || des.equals(fresh.getCategory())
                     || match(des, fresh.getName())) {
@@ -61,9 +70,12 @@ public class FreshService {
     }
 
     public List<Fresh> recommendFresh(int id) {
-        List<Fresh> res = new ArrayList<>();
-        List<Fresh> freshList = getFresh();
+        Set<Fresh> res = new HashSet<>();
+        List<Fresh> freshList = FRESH;
         Fresh target = getDetail(id);
+        if (target.getName() == null) {
+            return new ArrayList<>();
+        }
         String name = target.getName();
         String type = target.getType();
         for (Fresh fresh : freshList) {
@@ -76,6 +88,7 @@ public class FreshService {
                 res.add(fresh);
             }
         }
-        return res;
+        res.remove(target);
+        return new ArrayList<>(res);
     }
 }

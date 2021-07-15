@@ -61,19 +61,27 @@ public class FileUtils {
         }
     }
 
-    public static void writeLine(String fileName, String data) {
+    public static void clearFile(String file) {
+        File f = new File(file);
         try {
-            data = "\n" + data;
-            File file = new File(fileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            FileWriter fileWriter = new FileWriter(file, true);
-            fileWriter.write(data);
+            FileWriter fileWriter = new FileWriter(f);
+            fileWriter.write("");
+            fileWriter.flush();
             fileWriter.close();
         } catch (Exception e) {
-            System.out.println(e);
+        }
+    }
 
+    public static void writeByLine(String fileName, List<String> data) {
+        try {
+            FileWriter fw = new FileWriter(fileName);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (String arr : data) {
+                bw.write(arr + "\n");
+            }
+            bw.close();
+            fw.close();
+        } catch (Exception e) {
         }
     }
 

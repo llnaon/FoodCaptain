@@ -1,5 +1,6 @@
 package com.cityu.foodcaptain.controller;
 
+import com.cityu.foodcaptain.entity.Fresh;
 import com.cityu.foodcaptain.entity.Recipe;
 import com.cityu.foodcaptain.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,24 @@ public class RecipeController {
     RecipeService recipeService;
 
     @GetMapping("/recipe")
-    public List<Recipe> getRecipe(){
-        return recipeService.getRecipe();
+    public List<Recipe> getRecipe() {
+        return RecipeService.RECIPES;
     }
+
+    @GetMapping("/getRecipeDetail")
+    public Recipe getRecipeDetail(int id) {
+        return recipeService.getRecipeDetail(id);
+    }
+
+    @GetMapping("/getRecipeRelatedFresh")
+    public List<Fresh> getRecipeRelatedFresh(int recipeId) {
+        return recipeService.getRecipeRelatedFresh(recipeId);
+    }
+
+    @GetMapping("/searchRecipe")
+    public List<Recipe> searchRecipe(String str) {
+        return recipeService.searchRecipe(str);
+    }
+
 
 }

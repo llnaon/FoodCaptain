@@ -14,11 +14,6 @@ public class FreshController {
     @Autowired
     private FreshService freshService;
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello world2";
-    }
-
     @GetMapping("/searchFresh")
     public List<Fresh> searchFresh(String des){
         return freshService.searchFresh(des);
@@ -31,7 +26,7 @@ public class FreshController {
 
     @GetMapping("/fresh")
     public List<Fresh> getFresh(){
-        return freshService.getFresh();
+        return FreshService.FRESH;
     }
 
 }
