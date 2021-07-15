@@ -26,8 +26,8 @@ public class RecipeController {
     }
 
     @GetMapping("/getRecipeRelatedFresh")
-    public List<Fresh> getRecipeRelatedFresh(int recipeId) {
-        return recipeService.getRecipeRelatedFresh(recipeId);
+    public List<Fresh> getRecipeRelatedFresh(int id) {
+        return recipeService.getRecipeRelatedFresh(id);
     }
 
     @GetMapping("/searchRecipe")

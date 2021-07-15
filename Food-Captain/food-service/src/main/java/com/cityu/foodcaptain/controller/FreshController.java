@@ -15,8 +15,8 @@ public class FreshController {
     private FreshService freshService;
 
     @GetMapping("/searchFresh")
-    public List<Fresh> searchFresh(String des){
-        return freshService.searchFresh(des);
+    public List<Fresh> searchFresh(String str){
+        return freshService.searchFresh(str);
     }
 
     @GetMapping("/getFreshDetail")
