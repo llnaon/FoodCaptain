@@ -78,6 +78,7 @@ public class FreshService {
         }
         String name = target.getName();
         String type = target.getType();
+        String category = target.getCategory();
         for (Fresh fresh : freshList) {
             if (match(name, fresh.getName())) {
                 res.add(fresh);
@@ -85,6 +86,11 @@ public class FreshService {
         }
         for (Fresh fresh : freshList) {
             if (type.equals(fresh.getType())) {
+                res.add(fresh);
+            }
+        }
+        for (Fresh fresh : freshList) {
+            if (category.equals(fresh.getCategory())) {
                 res.add(fresh);
             }
         }

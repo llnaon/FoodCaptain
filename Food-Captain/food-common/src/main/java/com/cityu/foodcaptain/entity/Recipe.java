@@ -39,23 +39,6 @@ public class Recipe {
         return recipe;
     }
 
-    public static int calSimilarity(Recipe r1, Recipe r2) {
-        if (r1 == null || r2 == null) {
-            return 0;
-        }
-        int res = 0;
-        List<RecipeContainer> l1 = r1.getRecipeContainers();
-        List<RecipeContainer> l2 = r2.getRecipeContainers();
-        Set<String> match = new HashSet<>(l1).stream()
-                .map(RecipeContainer::getFood).collect(Collectors.toSet());
-        for (RecipeContainer rc : l2) {
-            if (rc != null && match.contains(rc.getFood())) {
-                res++;
-            }
-        }
-        return res;
-    }
-
     public String getCuisineSystem() {
         return cuisineSystem;
     }

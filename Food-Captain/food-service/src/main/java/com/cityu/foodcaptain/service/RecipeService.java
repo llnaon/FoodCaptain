@@ -4,6 +4,7 @@ import com.cityu.foodcaptain.constants.Constants;
 import com.cityu.foodcaptain.entity.Fresh;
 import com.cityu.foodcaptain.entity.Recipe;
 import com.cityu.foodcaptain.entity.RecipeContainer;
+import com.cityu.foodcaptain.entity.RecipeRecommendation;
 import com.cityu.foodcaptain.utils.FileUtils;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
-
-    public static final int NUM_MAX_REC = 10;
-    public static final int NUM_SYS_REC = 3;
-    public static final int SIM_THRESHOLD = 4;
 
     public static final List<Recipe> RECIPES = getRecipe();
 
@@ -64,19 +61,13 @@ public class RecipeService {
         if (list == null) {
             return res;
         }
-        Set<String> matchSet = new HashSet<>();
         for (RecipeContainer recipeContainer : list) {
-            matchSet.add(recipeContainer.getFood());
-        }
-        for (Fresh fresh : freshList) {
-            if (matchSet.isEmpty()) {
-                break;
-            }
-            if (fresh == null) {
-                continue;
-            }
-            if (matchSet.remove(fresh.getType())) {
-                res.add(fresh);
+            if (recipeContainer.getFood() == null) continue;
+            for (Fresh fresh : freshList) {
+                if (recipeContainer.getFood().equals(fresh.getType())) {
+                    res.add(fresh);
+                    break;
+                }
             }
         }
         return res;
@@ -84,31 +75,38 @@ public class RecipeService {
 
     public List<Recipe> recommendRecipe(int recipeId) {
         Recipe cur = getRecipeDetail(recipeId);
-        int num = 0;
-        List<Recipe> res = new ArrayList<>(NUM_MAX_REC);
         List<Recipe> list = RECIPES;
         Collections.shuffle(list);
-        if (cur.getName() == null) {
-            for (int i = 0; i < NUM_MAX_REC && i < list.size(); i++) {
-                res.add(list.get(i));
-            }
-            return res;
-        }
-        for (Recipe recipe : list) {
-            if (recipe == cur) {
-                continue;
-            }
-            if (cur.getCuisineSystem().equals(recipe.getCuisineSystem())
-                    && num < NUM_SYS_REC && res.size() < NUM_MAX_REC) {
-                res.add(recipe);
-                num++;
-                continue;
-            }
-            if (Recipe.calSimilarity(cur, recipe) >= SIM_THRESHOLD
-                    && res.size() < NUM_MAX_REC) {
-                res.add(recipe);
-            }
-        }
+        List<RecipeRecommendation> rrList = getSimiList(cur, list);
+        rrList.sort((rr1, rr2) -> rr2.getScore() - rr1.getScore());
+        List<Recipe> res = rrList.stream().map(RecipeRecommendation::getRecipe).collect(Collectors.toList());
+        res.remove(cur);
         return res;
+    }
+
+    private List<RecipeRecommendation> getSimiList(Recipe cur, List<Recipe> list) {
+        return list.stream().map(recipe -> calSimilarity(cur, recipe)).collect(Collectors.toList());
+    }
+
+    public RecipeRecommendation calSimilarity(Recipe cur, Recipe r2) {
+        if (cur == null || r2 == null) {
+            return null;
+        }
+        int res = 0;
+        if (cur.getCuisineSystem().equals(r2.getCuisineSystem())) {
+            res += 10;
+        }
+        int score = 10;
+        List<RecipeContainer> l1 = cur.getRecipeContainers();
+        List<RecipeContainer> l2 = r2.getRecipeContainers();
+        Set<String> match = new HashSet<>(l1).stream()
+                .map(RecipeContainer::getFood).collect(Collectors.toSet());
+        for (RecipeContainer rc : l2) {
+            if (rc != null && match.contains(rc.getFood())) {
+                res += score;
+            }
+            score = score / 3 + 1;
+        }
+        return new RecipeRecommendation(r2, res);
     }
 }
