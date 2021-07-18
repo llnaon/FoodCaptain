@@ -40,8 +40,8 @@ public class CartService {
         for (CartModel cartModel : cartModels) {
             res.add(cartModel.getFreshId() + Constants.SPLIT + cartModel.getNum());
         }
-        FileUtils.clearFile(Constants.CART);
-        FileUtils.writeByLine(Constants.CART, res);
+//        FileUtils.clearFile(Constants.CART);
+//        FileUtils.writeByLine(Constants.CART, res);
     }
 
     public List<CartElement> showCart() {
@@ -63,6 +63,6 @@ public class CartService {
     }
 
     public void pay() {
-        FileUtils.clearFile(Constants.CART);
+//        FileUtils.clearFile(Constants.CART);
     }
 }

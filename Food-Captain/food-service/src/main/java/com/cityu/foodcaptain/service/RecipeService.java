@@ -18,7 +18,8 @@ public class RecipeService {
 
     public static List<Recipe> getRecipe() {
         List<Recipe> res = new ArrayList<>();
-        String data = FileUtils.readAll(Constants.RECIPE);
+//        String data = FileUtils.readAll(Constants.RECIPE);
+        String data = Constants.RECIPE_DATA;
         if (data == null) {
             return res;
         }

@@ -5,10 +5,7 @@ import com.cityu.foodcaptain.entity.Fresh;
 import com.cityu.foodcaptain.utils.FileUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class FreshService {
@@ -16,7 +13,9 @@ public class FreshService {
     public static final List<Fresh> FRESH = getFresh();
 
     public static List<Fresh> getFresh() {
-        List<String> data = FileUtils.readFileByLines(Constants.FRESH);
+        String rawData = Constants.FRESH_DATA;
+//        List<String> data = FileUtils.readFileByLines(Constants.FRESH);
+        List<String> data = Arrays.asList(rawData.split("\n"));
         List<Fresh> freshList = new ArrayList<>();
         for (String record : data) {
             Fresh fresh = parseFresh(record);
